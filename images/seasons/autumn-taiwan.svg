@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffddb0"/>
+      <stop offset="100%" stop-color="#fff0d1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1330" cy="140" r="58" fill="#ffd166"/>
+  <path d="M0 620Q240 500 460 560T860 540T1290 590T1600 550V900H0Z" fill="#c08c52"/>
+  <path d="M0 710Q250 620 470 680T860 650T1280 710T1600 690V900H0Z" fill="#9e6334"/>
+  <path d="M910 350l120 330H790z" fill="#7b828f"/>
+  <path d="M1010 290l150 390H860z" fill="#626a77"/>
+  <g fill="#da7b2f">
+    <circle cx="220" cy="330" r="16"/><circle cx="330" cy="290" r="18"/><circle cx="470" cy="345" r="16"/>
+    <circle cx="540" cy="260" r="15"/><circle cx="630" cy="320" r="17"/><circle cx="730" cy="280" r="16"/>
+  </g>
+  <g fill="#f2b35c">
+    <circle cx="270" cy="370" r="14"/><circle cx="390" cy="340" r="14"/><circle cx="570" cy="350" r="14"/>
+  </g>
+</svg>

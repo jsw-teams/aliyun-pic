@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>上传图片</title>
+    <meta name="description" content="单页图片上传页面，支持人机验证、本地 Cookie 保存、多语言与无障碍访问。" />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="上传图片" />
+    <meta property="og:description" content="支持人机验证、本地 Cookie 保存、多语言与无障碍访问。" />
+    <meta property="og:image" content="/assets/logo.svg" />
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href="/images/seasons/spring-taiwan.svg" />
+    <link rel="preload" as="image" href="/images/seasons/summer-taiwan.svg" />
+    <link rel="preload" as="image" href="/images/seasons/autumn-taiwan.svg" />
+    <link rel="preload" as="image" href="/images/seasons/winter-taiwan.svg" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body>
+    <div class="bg-layer" aria-hidden="true">
+      <div class="bg-slide bg-slide-1"></div>
+      <div class="bg-slide bg-slide-2"></div>
+      <div class="bg-slide bg-slide-3"></div>
+      <div class="bg-slide bg-slide-4"></div>
+      <div class="bg-mask"></div>
+    </div>
+
+    <a class="skip-link" href="#main-card">Skip to content</a>
+
+    <main class="layout" id="main-content">
+      <section class="card" id="main-card" aria-labelledby="page-title">
+        <header class="card-header">
+          <img class="logo" src="/assets/logo.svg" alt="" width="48" height="48" />
+          <div>
+            <h1 id="page-title" data-i18n="title">上传图片</h1>
+            <p class="muted" data-i18n="subtitle">选择图片、完成验证、上传并复制结果。</p>
+          </div>
+        </header>
+
+        <div class="field-stack">
+          <div class="field">
+            <label class="label" for="file-input" data-i18n="fileLabel">图片文件</label>
+            <div class="file-row">
+              <input
+                id="file-input"
+                class="sr-only"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/svg+xml"
+              />
+              <button type="button" class="button button-secondary" id="choose-file-btn" data-i18n="chooseFile">
+                选择图片
+              </button>
+              <p class="file-name" id="file-name" aria-live="polite" data-i18n="noFile">
+                未选择文件
+              </p>
+            </div>
+            <p class="hint" id="file-hint" data-i18n="fileHint">仅支持图片，大小不超过 5MB。</p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="cookie-input" data-i18n="cookieLabel">闲鱼 Cookie</label>
+            <textarea
+              id="cookie-input"
+              class="textarea"
+              rows="5"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-describedby="cookie-help"
+            ></textarea>
+            <div class="cookie-meta" id="cookie-help">
+              <p class="hint" data-i18n="cookieHint">
+                Cookie 仅保存在当前浏览器本地。个人设备可勾选记住；公用设备不要保存。
+              </p>
+              <a id="cookie-help-link" class="text-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cookieHelpLink">查看 Cookie 获取说明</a>
+            </div>
+            <div class="checkbox-row">
+              <label class="checkbox-wrap" for="remember-cookie">
+                <input id="remember-cookie" type="checkbox" />
+                <span data-i18n="rememberCookie">记住 Cookie</span>
+              </label>
+              <button type="button" class="text-button" id="clear-cookie-btn" data-i18n="clearSavedCookie">清除已保存 Cookie</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="button button-primary" id="upload-btn" data-i18n="uploadNow">上传</button>
+        </div>
+
+        <p class="status" id="status-live" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <div class="modal" id="verify-modal" hidden>
+      <div class="modal-backdrop" data-close-modal="verify-modal"></div>
+      <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="verify-title">
+        <header class="modal-header">
+          <h2 id="verify-title" data-i18n="verifyTitle">请完成人机验证</h2>
+          <button type="button" class="icon-button" data-close-modal="verify-modal" aria-label="Close">×</button>
+        </header>
+        <p class="muted" data-i18n="verifyDesc">验证通过后将自动开始上传。</p>
+        <div id="turnstile-widget" class="turnstile-box" aria-live="polite"></div>
+        <p class="status small" id="verify-status" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <div class="modal" id="loading-modal" hidden>
+      <div class="modal-backdrop modal-backdrop-solid"></div>
+      <section class="modal-dialog modal-dialog-compact" role="dialog" aria-modal="true" aria-labelledby="loading-title">
+        <div class="spinner" aria-hidden="true"></div>
+        <h2 id="loading-title" data-i18n="uploadingTitle">正在上传</h2>
+        <p class="muted" id="loading-text" data-i18n="uploadingDesc">请不要关闭页面。</p>
+      </section>
+    </div>
+
+    <div class="modal" id="result-modal" hidden>
+      <div class="modal-backdrop" data-close-modal="result-modal"></div>
+      <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="result-title">
+        <header class="modal-header">
+          <h2 id="result-title" data-i18n="resultTitle">上传结果</h2>
+          <button type="button" class="icon-button" data-close-modal="result-modal" aria-label="Close">×</button>
+        </header>
+        <div class="result-grid">
+          <div class="field">
+            <label class="label" for="result-url" data-i18n="directUrl">图片直链</label>
+            <textarea id="result-url" class="textarea textarea-result" rows="3" readonly></textarea>
+            <button type="button" class="button button-secondary result-copy" data-copy-target="result-url" data-i18n="copyDirectUrl">复制直链</button>
+          </div>
+          <div class="field">
+            <label class="label" for="result-md" data-i18n="markdownCode">Markdown 插入</label>
+            <textarea id="result-md" class="textarea textarea-result" rows="3" readonly></textarea>
+            <button type="button" class="button button-secondary result-copy" data-copy-target="result-md" data-i18n="copyMarkdown">复制 Markdown</button>
+          </div>
+          <details class="details-block">
+            <summary data-i18n="showRawResponse">查看原始返回</summary>
+            <pre id="result-raw" class="raw-response"></pre>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <noscript>
+      <div class="noscript">This page requires JavaScript.</div>
+    </noscript>
+
+    <script src="/assets/config.js"></script>
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>
