@@ -76,7 +76,8 @@ export const onRequestOptions = async () => {
     headers: {
       "access-control-allow-origin": "*",
       "access-control-allow-methods": "POST, OPTIONS",
-      "access-control-allow-headers": "content-type"
+      "access-control-allow-headers": "content-type",
+      "cache-control": "no-store, max-age=0"
     }
   });
 };
